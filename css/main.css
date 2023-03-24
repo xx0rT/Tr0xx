@@ -60,6 +60,9 @@ body {
 	top: 165px;
 	line-height: .9;
 }
+.main-header:hover{
+  cursor: default;
+}
 .gallery {
 	display: flex;
 	padding: calc(var(--index) * 8) 0;
