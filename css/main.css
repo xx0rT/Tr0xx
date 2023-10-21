@@ -474,3 +474,25 @@ a:hover  {
 .social__item {
   width: 28px;
 }
+@media only screen and (max-width: 1000px)  {
+  .main-title {
+      left: 62%;
+      font-size: 350%;
+      word-spacing: 90%;
+   }  
+  .logo{
+      left: 5%;
+   }
+}
+@media only screen and (max-width: 548px)  {
+  .nav-list__item{
+    margin-right: 50px;
+    left: 50%;
+    align-items: center;
+    font-display: calc();
+    position: unset;
+   }  
+  .logo{
+    left: 135px;
+   }
+}
