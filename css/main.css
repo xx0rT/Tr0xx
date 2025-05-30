@@ -496,3 +496,52 @@ a:hover  {
     left: 135px;
    }
 }
+@media (max-width:600px){
+  .nav-row{
+    flex-direction: column;
+    align-items: flex-start;
+  } 
+  .main-title{
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  .nav-list{
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .gallery{
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+  }
+  .gallery__left,.gallery__right{
+    width: 100%;
+  }
+  .gallery__item{
+    width: 100%;
+    height: auto;
+  }
+  .title-1,.title-1{
+    font-size: 1.2rem;
+    text-align: center;
+  }
+  .frontend {
+    font-size: 1rem;
+  }
+}
+
+
+@media (min-width: 601px) and (max-width: 1024px){
+  .gallery{
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .gallery__left, .gallery__right{
+    width: 50%;
+  }
+  .main-title{
+    font-size: 2rem;
+  }
+}
