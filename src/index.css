@@ -785,11 +785,69 @@ section {
 
 /* ---------- footer ---------- */
 .footer {
+  position: relative;
   border-top: 1px solid var(--border);
   background: var(--surface);
   padding: 56px 24px 30px;
   text-align: center;
   margin-top: 60px;
+  overflow: hidden;
+}
+
+/* glow line that sweeps across the top edge when the footer appears */
+.footer-glow {
+  position: absolute;
+  top: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.footer.visible .footer-glow {
+  animation: glow-sweep 1.6s ease-out 0.1s forwards;
+}
+
+@keyframes glow-sweep {
+  0% {
+    transform: translateX(-100%);
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(100%);
+    opacity: 0.6;
+  }
+}
+
+/* staggered rise of footer contents */
+.footer .f-item {
+  opacity: 0;
+  transform: translateY(34px) scale(0.98);
+  filter: blur(5px);
+}
+
+.footer.visible .f-item {
+  opacity: 1;
+  transform: none;
+  filter: blur(0);
+  transition: opacity 0.7s ease var(--d, 0ms), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1) var(--d, 0ms),
+    filter 0.7s ease var(--d, 0ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .footer .f-item {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+  .footer.visible .footer-glow {
+    animation: none;
+  }
 }
 
 .footer .quote {

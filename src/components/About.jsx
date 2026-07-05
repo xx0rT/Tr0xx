@@ -1,4 +1,5 @@
 import useReveal from '../hooks/useReveal'
+import asset from '../lib/asset'
 
 export default function About() {
   const ref = useReveal()
@@ -26,7 +27,7 @@ export default function About() {
         </div>
 
         <div className="card about-facts reveal">
-          <img src="/assets/workingguy.png" alt="Troxx avatar" />
+          <img src={asset('/assets/workingguy.png')} alt="Troxx avatar" />
           <div className="fact-list">
             <div className="fact-row">
               <span className="k">Name</span>

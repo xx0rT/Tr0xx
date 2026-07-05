@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import asset from '../lib/asset'
 
 const tabs = [
   { id: 'home', label: 'Home' },
@@ -31,7 +32,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <a href="#home" className="navbar-logo">
-        <img src="/assets/workingguy.png" alt="Troxx avatar" />
+        <img src={asset('/assets/workingguy.png')} alt="Troxx avatar" />
         Troxx
       </a>
 
