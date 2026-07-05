@@ -230,10 +230,12 @@ section {
   .hero {
     grid-template-columns: 1fr;
     text-align: center;
+    gap: 0;
+    padding-top: 76px;
   }
   .hero-canvas {
     order: -1;
-    height: 300px !important;
+    height: 250px !important;
   }
   .hero-actions {
     justify-content: center;
@@ -462,15 +464,20 @@ section {
   position: relative;
 }
 
-.skills-canvas-hint {
+.skills-canvas-hint,
+.gh-skyline-hint {
   position: absolute;
-  bottom: 14px;
-  right: 18px;
+  bottom: 12px;
+  right: 14px;
   color: var(--text-dim);
   font-size: 0.68rem;
   font-weight: 500;
   letter-spacing: 2px;
   pointer-events: none;
+  background: rgba(10, 10, 12, 0.65);
+  padding: 5px 10px;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
 }
 
 .skill-chip-img {
@@ -600,17 +607,6 @@ section {
   height: 400px;
 }
 
-.gh-skyline-hint {
-  position: absolute;
-  bottom: 14px;
-  right: 18px;
-  color: var(--text-dim);
-  font-size: 0.68rem;
-  font-weight: 500;
-  letter-spacing: 2px;
-  pointer-events: none;
-}
-
 .gh-stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -621,6 +617,21 @@ section {
 @media (max-width: 760px) {
   .gh-stats-row {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .gh-stat .value {
+    font-size: 1.35rem;
+  }
+  .skills-canvas-wrap {
+    height: 380px;
+  }
+  .gh-skyline-wrap {
+    height: 300px;
+  }
+  section {
+    padding: 90px 18px 30px;
+  }
+  .projects-grid {
+    grid-template-columns: 1fr;
   }
 }
 

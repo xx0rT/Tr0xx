@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useLayoutEffect, useMemo } from 'react'
-import { Canvas } from '@react-three/fiber'
+import { Canvas, useThree } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 import useReveal from '../hooks/useReveal'
@@ -111,6 +111,12 @@ function Skyline({ weeks }) {
   )
 }
 
+// shrink the skyline on narrow canvases so the full year stays visible
+function FitToAspect({ full = 2.6, children }) {
+  const aspect = useThree((state) => state.size.width / state.size.height)
+  return <group scale={Math.min(1, aspect / full)}>{children}</group>
+}
+
 function timeAgo(iso) {
   const days = Math.floor((Date.now() - new Date(iso)) / 86400000)
   if (days === 0) return 'today'
@@ -192,7 +198,9 @@ export default function GithubStats() {
         {!error && !weeks && <p className="gh-loading">Fetching contribution data…</p>}
         {weeks && (
           <Canvas camera={{ position: [0, 6.5, 12.5], fov: 42 }} dpr={[1, 2]}>
-            <Skyline weeks={weeks} />
+            <FitToAspect>
+              <Skyline weeks={weeks} />
+            </FitToAspect>
             <OrbitControls
               enableZoom={false}
               enablePan={false}

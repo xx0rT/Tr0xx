@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Float } from '@react-three/drei'
 
 const roles = ['Fullstack Web Developer', 'Security Enthusiast', 'Problem Solver']
@@ -40,6 +40,8 @@ function useTypewriter(words, speed = 70, pause = 2000) {
 function HeroObject() {
   const group = useRef()
   const knot = useRef()
+  const width = useThree((state) => state.size.width)
+  const fit = Math.min(1, width / 520)
 
   useFrame((state, delta) => {
     knot.current.rotation.x += delta * 0.18
@@ -52,7 +54,7 @@ function HeroObject() {
   })
 
   return (
-    <group ref={group}>
+    <group ref={group} scale={fit}>
       <Float speed={1.5} rotationIntensity={0.25} floatIntensity={0.9}>
         <mesh ref={knot}>
           <torusKnotGeometry args={[1.15, 0.34, 220, 36]} />

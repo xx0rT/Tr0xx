@@ -1,7 +1,13 @@
 import { useRef, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Html, OrbitControls } from '@react-three/drei'
 import { skills } from '../data/content'
+
+// shrink the scene on narrow canvases so nothing clips at the edges
+function FitToWidth({ full = 560, children }) {
+  const width = useThree((state) => state.size.width)
+  return <group scale={Math.min(1, width / full)}>{children}</group>
+}
 
 // distribute points evenly on a sphere (fibonacci lattice)
 function spherePositions(count, radius) {
@@ -50,7 +56,9 @@ export default function SkillsCloud() {
   return (
     <div className="skills-canvas-wrap">
       <Canvas camera={{ position: [0, 0, 6.2], fov: 50 }} dpr={[1, 2]}>
-        <Cloud />
+        <FitToWidth>
+          <Cloud />
+        </FitToWidth>
         <OrbitControls enableZoom={false} enablePan={false} rotateSpeed={0.6} />
       </Canvas>
       <span className="skills-canvas-hint">DRAG TO ROTATE</span>
