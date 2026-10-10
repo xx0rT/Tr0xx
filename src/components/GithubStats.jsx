@@ -1,21 +1,8 @@
-import { useState, useEffect, useRef, useLayoutEffect, useMemo } from 'react'
-import { Canvas, useThree } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-import * as THREE from 'three'
-import useReveal from '../hooks/useReveal'
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { gsap, EASE, reduced } from '../lib/gsap'
 import { github } from '../data/content'
 
-const LEVEL_COLORS = ['#1e1e24', '#0e4429', '#006d32', '#26a641', '#39d353']
-
-const LANG_COLORS = {
-  TypeScript: '#3178c6',
-  JavaScript: '#f1e05a',
-  Python: '#3572a5',
-  HTML: '#e34c26',
-  CSS: '#563d7c',
-  Lua: '#000080',
-  Astro: '#ff5a03',
-}
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 
 // group the flat day list into GitHub-style weeks (columns starting on Sunday)
 function toWeeks(contributions) {
@@ -50,73 +37,6 @@ function streakStats(contributions) {
   return { longest, bestDay, activeDays }
 }
 
-function Skyline({ weeks }) {
-  const meshRef = useRef()
-  const spacing = 0.34
-  const size = 0.28
-
-  const { count, maxCount } = useMemo(() => {
-    let max = 1
-    let n = 0
-    weeks.forEach((week) =>
-      week.forEach((day) => {
-        n += 1
-        if (day.count > max) max = day.count
-      })
-    )
-    return { count: n, maxCount: max }
-  }, [weeks])
-
-  useLayoutEffect(() => {
-    const mesh = meshRef.current
-    const dummy = new THREE.Object3D()
-    const color = new THREE.Color()
-    let i = 0
-    weeks.forEach((week, w) => {
-      week.forEach((day) => {
-        const dayIdx = new Date(day.date).getDay()
-        const h = 0.06 + (day.count / maxCount) * 2.6
-        dummy.position.set(
-          (w - weeks.length / 2) * spacing,
-          h / 2,
-          (dayIdx - 3) * spacing
-        )
-        dummy.scale.set(size, h, size)
-        dummy.updateMatrix()
-        mesh.setMatrixAt(i, dummy.matrix)
-        mesh.setColorAt(i, color.set(LEVEL_COLORS[day.level] ?? LEVEL_COLORS[0]))
-        i += 1
-      })
-    })
-    mesh.instanceMatrix.needsUpdate = true
-    if (mesh.instanceColor) mesh.instanceColor.needsUpdate = true
-  }, [weeks, maxCount])
-
-  const baseWidth = weeks.length * spacing + 0.8
-
-  return (
-    <group>
-      <instancedMesh ref={meshRef} args={[null, null, count]}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshStandardMaterial />
-      </instancedMesh>
-      <mesh position={[0, -0.12, 0]}>
-        <boxGeometry args={[baseWidth, 0.2, 7 * spacing + 0.8]} />
-        <meshStandardMaterial color="#17171c" />
-      </mesh>
-      <ambientLight intensity={0.85} />
-      <directionalLight position={[6, 10, 6]} intensity={1.1} />
-      <directionalLight position={[-6, 4, -4]} intensity={0.35} color="#7aa2ff" />
-    </group>
-  )
-}
-
-// shrink the skyline on narrow canvases so the full year stays visible
-function FitToAspect({ full = 2.6, children }) {
-  const aspect = useThree((state) => state.size.width / state.size.height)
-  return <group scale={Math.min(1, aspect / full)}>{children}</group>
-}
-
 function timeAgo(iso) {
   const days = Math.floor((Date.now() - new Date(iso)) / 86400000)
   if (days === 0) return 'today'
@@ -126,12 +46,18 @@ function timeAgo(iso) {
   return `${Math.floor(days / 365)}y ago`
 }
 
+const fmtDate = (iso) =>
+  new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+
+/* A year of work as a flat grid that ripples in, the yearly total
+   counting up beside it, then the repositories as an index. */
 export default function GithubStats() {
-  const ref = useReveal()
+  const root = useRef(null)
   const [contrib, setContrib] = useState(null)
   const [user, setUser] = useState(null)
   const [repos, setRepos] = useState(null)
   const [error, setError] = useState(false)
+  const [hover, setHover] = useState(null)
 
   useEffect(() => {
     let alive = true
@@ -157,15 +83,8 @@ export default function GithubStats() {
   }, [])
 
   const weeks = useMemo(() => (contrib ? toWeeks(contrib.contributions) : null), [contrib])
-  const streaks = useMemo(
-    () => (contrib ? streakStats(contrib.contributions) : null),
-    [contrib]
-  )
-
-  const recentRepos = useMemo(
-    () => (repos ? repos.filter((r) => !r.fork).slice(0, 6) : null),
-    [repos]
-  )
+  const streaks = useMemo(() => (contrib ? streakStats(contrib.contributions) : null), [contrib])
+  const recentRepos = useMemo(() => (repos ? repos.filter((r) => !r.fork).slice(0, 6) : null), [repos])
 
   const languages = useMemo(() => {
     if (!repos) return null
@@ -176,104 +95,213 @@ export default function GithubStats() {
     const total = Object.values(counts).reduce((a, b) => a + b, 0)
     return Object.entries(counts)
       .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
       .map(([name, n]) => ({ name, pct: Math.round((n / total) * 100) }))
   }, [repos])
 
+  /* Month labels sit over the first week that starts in a new month. */
+  const months = useMemo(() => {
+    if (!weeks) return []
+    const out = []
+    let last = -1
+    weeks.forEach((w, i) => {
+      const m = new Date(w[0].date).getMonth()
+      if (m !== last) {
+        if (i < weeks.length - 2) out.push({ i, label: MONTHS[m] })
+        last = m
+      }
+    })
+    return out
+  }, [weeks])
+
+  const total = contrib?.total?.lastYear ?? null
   const stats = [
-    { label: 'Contributions / year', value: contrib?.total.lastYear.toLocaleString() },
-    { label: 'Longest streak', value: streaks ? `${streaks.longest} days` : null },
-    { label: 'Best day', value: streaks ? `${streaks.bestDay} commits` : null },
-    { label: 'Active days', value: streaks ? `${streaks.activeDays}` : null },
-    { label: 'Public repos', value: user?.public_repos },
-    { label: 'On GitHub since', value: user ? new Date(user.created_at).getFullYear() : null },
+    { label: 'Longest streak', value: streaks ? `${streaks.longest}` : null, unit: 'days' },
+    { label: 'Best day', value: streaks ? `${streaks.bestDay}` : null, unit: 'commits' },
+    { label: 'Active days', value: streaks ? `${streaks.activeDays}` : null, unit: 'of 365' },
+    { label: 'Public repos', value: user?.public_repos != null ? `${user.public_repos}` : null, unit: '' },
+    { label: 'On GitHub since', value: user ? `${new Date(user.created_at).getFullYear()}` : null, unit: '' },
   ]
 
-  return (
-    <section id="github" ref={ref} className="gh screen">
-      <p className="section-index reveal">(04) GitHub</p>
-      <h2 className="section-title reveal">A year of contributions, in 3D</h2>
+  /* Heading and labels — always present. */
+  useLayoutEffect(() => {
+    const el = root.current
+    if (!el || reduced()) return
+    const ctx = gsap.context(() => {
+      gsap.from('.gh-headline > *', {
+        yPercent: 110,
+        duration: 1.2,
+        ease: EASE,
+        stagger: 0.1,
+        scrollTrigger: { trigger: '.gh-headline', start: 'top 80%' },
+      })
+    }, el)
+    return () => ctx.revert()
+  }, [])
 
-      <div className="card gh-skyline-wrap reveal">
-        {error && <p className="gh-error">Couldn't reach the GitHub API — check back later.</p>}
-        {!error && !weeks && <p className="gh-loading">Fetching contribution data…</p>}
-        {weeks && (
-          <Canvas camera={{ position: [0, 6.5, 12.5], fov: 42 }} dpr={[1, 2]}>
-            <FitToAspect>
-              <Skyline weeks={weeks} />
-            </FitToAspect>
-            <OrbitControls
-              enableZoom={false}
-              enablePan={false}
-              autoRotate
-              autoRotateSpeed={0.8}
-              minPolarAngle={0.6}
-              maxPolarAngle={1.45}
-            />
-          </Canvas>
-        )}
-        <span className="gh-skyline-hint">DRAG TO ROTATE</span>
+  /* Data-driven parts animate once the data is in. */
+  useLayoutEffect(() => {
+    const el = root.current
+    if (!el || !contrib) return
+    if (reduced()) return
+    const ctx = gsap.context(() => {
+      const st = (trigger, start = 'top 80%') => ({ trigger, start })
+      gsap.from('.gh-cell', {
+        scale: 0,
+        opacity: 0,
+        duration: 0.6,
+        ease: 'back.out(2)',
+        stagger: { grid: 'auto', from: 'start', amount: 1.4 },
+        scrollTrigger: st('.gh-graph'),
+      })
+      if (total != null) {
+        const n = { v: 0 }
+        const node = el.querySelector('.gh-total-num')
+        gsap.to(n, {
+          v: total,
+          duration: 2,
+          ease: 'power3.out',
+          onUpdate: () => (node.textContent = Math.round(n.v).toLocaleString('en-US')),
+          scrollTrigger: st('.gh-graph'),
+        })
+      }
+      gsap.from('.gh-stat', {
+        '--line': 0,
+        y: 30,
+        opacity: 0,
+        duration: 1,
+        ease: EASE,
+        stagger: 0.07,
+        scrollTrigger: st('.gh-stats'),
+      })
+      gsap.from('.gh-repo', {
+        '--line': 0,
+        y: 24,
+        opacity: 0,
+        duration: 0.9,
+        ease: EASE,
+        stagger: 0.06,
+        scrollTrigger: st('.gh-repos'),
+      })
+      gsap.from('.gh-lang-seg', {
+        scaleX: 0,
+        duration: 1.2,
+        ease: EASE,
+        stagger: 0.08,
+        scrollTrigger: st('.gh-langs'),
+      })
+    }, el)
+    return () => ctx.revert()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contrib, repos])
+
+  return (
+    <section id="github" ref={root} className="gh screen">
+      <p className="section-index">(04) GitHub</p>
+
+      <div className="gh-head">
+        <h2 className="gh-headline">
+          <span className="gh-total-num">{total != null ? total.toLocaleString('en-US') : '—'}</span>
+          <span className="gh-total-label">contributions in the last year</span>
+        </h2>
+        <a className="btn btn-line" href={github.profile} target="_blank" rel="noreferrer">
+          @{github.username} ↗
+        </a>
       </div>
 
-      <div className="gh-stats-row reveal">
-        {stats.map(({ label, value }) => (
+      <div className="gh-graph-wrap">
+        {error && <p className="gh-note">Couldn’t reach the GitHub API — check back later.</p>}
+        {!error && !weeks && <p className="gh-note">Fetching contribution data…</p>}
+        {weeks && (
+          <div className="gh-graph" style={{ '--weeks': weeks.length }} onMouseLeave={() => setHover(null)}>
+            <div className="gh-months">
+              {months.map((m) => (
+                <span key={m.i} style={{ gridColumn: m.i + 1 }}>
+                  {m.label}
+                </span>
+              ))}
+            </div>
+            <div className="gh-cells">
+              {weeks.map((week, w) =>
+                week.map((day) => (
+                  <i
+                    key={day.date}
+                    className="gh-cell"
+                    data-level={day.level}
+                    style={{ gridColumn: w + 1, gridRow: new Date(day.date).getDay() + 1 }}
+                    onMouseEnter={() => setHover(day)}
+                  />
+                ))
+              )}
+            </div>
+            <p className="gh-readout">
+              {hover ? (
+                <>
+                  <strong>{hover.count}</strong> {hover.count === 1 ? 'contribution' : 'contributions'} ·{' '}
+                  {fmtDate(hover.date)}
+                </>
+              ) : (
+                <>Hover a day</>
+              )}
+              <span className="gh-scale">
+                Less
+                {[0, 1, 2, 3, 4].map((l) => (
+                  <i key={l} className="gh-cell is-static" data-level={l} />
+                ))}
+                More
+              </span>
+            </p>
+          </div>
+        )}
+      </div>
+
+      <dl className="gh-stats">
+        {stats.map(({ label, value, unit }) => (
           <div className="gh-stat" key={label}>
-            <span className="label">{label}</span>
-            <span className="value">{value ?? '—'}</span>
+            <dt>{label}</dt>
+            <dd>
+              {value ?? '—'}
+              {value && unit && <small>{unit}</small>}
+            </dd>
           </div>
         ))}
-      </div>
+      </dl>
 
-      {(recentRepos?.length || languages?.length) && (
-        <div className="gh-detail-grid reveal">
+      {(recentRepos?.length > 0 || languages?.length > 0) && (
+        <div className="gh-lower">
           {recentRepos?.length > 0 && (
-            <div className="card gh-repos">
-              <h3>Recent repositories</h3>
+            <div className="gh-repos">
+              <p className="gh-sub">Recently pushed</p>
               {recentRepos.map((repo) => (
-                <a
-                  key={repo.id}
-                  href={repo.html_url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="gh-repo-row"
-                >
-                  <div>
-                    <span className="repo-name">{repo.name}</span>
-                    {repo.description && <span className="repo-desc">{repo.description}</span>}
-                  </div>
-                  <div className="repo-meta">
-                    {repo.language && (
-                      <span className="repo-lang">
-                        <i
-                          style={{ background: LANG_COLORS[repo.language] || '#9d9da8' }}
-                        />
-                        {repo.language}
-                      </span>
-                    )}
-                    <span className="repo-time">{timeAgo(repo.pushed_at)}</span>
-                  </div>
+                <a key={repo.id} href={repo.html_url} target="_blank" rel="noreferrer" className="gh-repo" data-cursor="Open">
+                  <span className="gh-repo-name">{repo.name}</span>
+                  {repo.description && <span className="gh-repo-desc">{repo.description}</span>}
+                  <span className="gh-repo-meta">
+                    {repo.language && <span>{repo.language}</span>}
+                    <span>{timeAgo(repo.pushed_at)}</span>
+                  </span>
                 </a>
               ))}
             </div>
           )}
 
           {languages?.length > 0 && (
-            <div className="card gh-langs">
-              <h3>Languages</h3>
-              {languages.map(({ name, pct }) => (
-                <div className="lang-row" key={name}>
-                  <span className="lang-name">{name}</span>
-                  <div className="lang-bar">
-                    <div
-                      className="lang-fill"
-                      style={{
-                        width: `${pct}%`,
-                        background: LANG_COLORS[name] || '#9d9da8',
-                      }}
-                    />
-                  </div>
-                  <span className="lang-pct">{pct}%</span>
-                </div>
-              ))}
+            <div className="gh-langs">
+              <p className="gh-sub">Languages by repository</p>
+              <div className="gh-lang-bar">
+                {languages.map(({ name, pct }, i) => (
+                  <i key={name} className="gh-lang-seg" data-rank={i} style={{ flexGrow: pct }} />
+                ))}
+              </div>
+              <ul className="gh-lang-list">
+                {languages.map(({ name, pct }, i) => (
+                  <li key={name}>
+                    <i data-rank={i} />
+                    <span>{name}</span>
+                    <span>{pct}%</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>

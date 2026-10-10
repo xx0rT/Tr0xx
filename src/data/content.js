@@ -1,19 +1,35 @@
 import asset from '../lib/asset'
 
-export const skills = [
-  { name: 'NMAP', icon: asset('/assets/skills/nmap.png') },
-  { name: 'METASPLOIT', icon: asset('/assets/skills/metasploit.png') },
-  { name: 'KALI LINUX', icon: asset('/assets/skills/kali.svg') },
-  { name: 'BURP SUITE', icon: asset('/assets/skills/portswigger.png') },
-  { name: 'WIRESHARK', icon: asset('/assets/skills/wireshark.png') },
-  { name: 'PYTHON', icon: asset('/assets/skills/python.svg') },
-  { name: 'OWASP ZAP', icon: asset('/assets/skills/owaspzap.png') },
-  { name: 'SQLMAP', icon: asset('/assets/skills/sqlmap.png') },
-  { name: 'MALTEGO', icon: asset('/assets/skills/maltego.png') },
-  { name: 'JOHN THE RIPPER', icon: asset('/assets/skills/johntheripper.png') },
-  { name: 'HASHCAT', icon: asset('/assets/skills/hashcat.png') },
-  { name: 'NESSUS', icon: asset('/assets/skills/nessus.png') },
-]
+/* Two halves of the same job. `mono` icons are single-colour brand marks
+   (simple-icons) drawn through a CSS mask; the rest are the tools' own
+   logos. */
+export const skills = {
+  build: [
+    { name: 'React', note: 'Interfaces', icon: asset('/assets/skills/react.svg'), mono: true },
+    { name: 'TypeScript', note: 'Language', icon: asset('/assets/skills/typescript.svg'), mono: true },
+    { name: 'Node.js', note: 'Servers', icon: asset('/assets/skills/nodedotjs.svg'), mono: true },
+    { name: 'Supabase', note: 'Backend', icon: asset('/assets/skills/supabase.svg'), mono: true },
+    { name: 'PostgreSQL', note: 'Data', icon: asset('/assets/skills/postgresql.svg'), mono: true },
+    { name: 'Stripe', note: 'Payments', icon: asset('/assets/skills/stripe.svg'), mono: true },
+    { name: 'GSAP', note: 'Motion', icon: asset('/assets/skills/greensock.svg'), mono: true },
+    { name: 'Three.js', note: 'WebGL', icon: asset('/assets/skills/threedotjs.svg'), mono: true },
+    { name: 'Tailwind', note: 'Styling', icon: asset('/assets/skills/tailwindcss.svg'), mono: true },
+  ],
+  break: [
+    { name: 'Burp Suite', note: 'Web proxy', icon: asset('/assets/skills/portswigger.png') },
+    { name: 'Nmap', note: 'Recon', icon: asset('/assets/skills/nmap.png') },
+    { name: 'Metasploit', note: 'Exploitation', icon: asset('/assets/skills/metasploit.png') },
+    { name: 'Wireshark', note: 'Traffic', icon: asset('/assets/skills/wireshark.png') },
+    { name: 'OWASP ZAP', note: 'Web scanner', icon: asset('/assets/skills/owaspzap.png') },
+    { name: 'sqlmap', note: 'Injection', icon: asset('/assets/skills/sqlmap.png') },
+    { name: 'Hashcat', note: 'Cracking', icon: asset('/assets/skills/hashcat.png') },
+    { name: 'John the Ripper', note: 'Cracking', icon: asset('/assets/skills/johntheripper.png') },
+    { name: 'Maltego', note: 'OSINT', icon: asset('/assets/skills/maltego.png') },
+    { name: 'Nessus', note: 'Vuln scanning', icon: asset('/assets/skills/nessus.png') },
+    { name: 'Kali Linux', note: 'Platform', icon: asset('/assets/skills/kali.svg') },
+    { name: 'Python', note: 'Scripting', icon: asset('/assets/skills/python.svg') },
+  ],
+}
 
 /* Every project carries a live URL (embedded in an iframe, pointer-events
    off until it is opened fullscreen) plus fresh desktop + mobile

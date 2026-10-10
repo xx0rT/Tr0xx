@@ -11,20 +11,20 @@ const TABS = [
 ]
 const host = (url) => url.replace(/^https?:\/\//, '').replace(/\/$/, '')
 
-function ProjectPanel({ project, index, total }) {
+function ProjectPanel({ project, index, total, current }) {
   const root = useRef(null)
   const frame = useRef(null)
   const [tab, setTab] = useState('live')
-  const [near, setNear] = useState(false)
+  const [live, setLive] = useState(false)
 
-  /* The live iframe exists only while the panel is within a screen of
-     the viewport. */
+  /* Only the panel in front runs its site, and only once you have
+     stopped on it for a moment — scrolling past seven live websites
+     (one of them WebGL) is what made weaker laptops stutter. */
   useEffect(() => {
-    const el = root.current
-    const io = new IntersectionObserver(([e]) => setNear(e.isIntersecting), { rootMargin: '100% 0px' })
-    io.observe(el)
-    return () => io.disconnect()
-  }, [])
+    if (!current) return setLive(false)
+    const t = setTimeout(() => setLive(true), 350)
+    return () => clearTimeout(t)
+  }, [current])
 
   /* Tab change: the stage dips and comes back with the new view. */
   const switchTo = (id) => {
@@ -49,7 +49,7 @@ function ProjectPanel({ project, index, total }) {
 
   const device = tab === 'mobile' ? 'mobile' : 'desktop'
   return (
-    <article ref={root} className="panel" data-panel>
+    <article ref={root} id={`work-${project.slug}`} className="panel" data-panel style={{ zIndex: index + 1 }}>
       <div className="panel-inner" data-panel-inner>
         <div className="panel-info">
           <p className="panel-index">
@@ -104,7 +104,7 @@ function ProjectPanel({ project, index, total }) {
                   url={project.url}
                   shot={project.shots[device]}
                   device={device}
-                  active={near}
+                  active={live}
                   title={project.title}
                 />
               )}
@@ -121,6 +121,7 @@ function ProjectPanel({ project, index, total }) {
    back and dims. On narrow screens they simply follow one another. */
 export default function Work() {
   const root = useRef(null)
+  const [current, setCurrent] = useState(-1)
 
   useLayoutEffect(() => {
     const el = root.current
@@ -138,6 +139,21 @@ export default function Work() {
         })
       }
 
+      /* Which panel is in front: the one whose own screen holds the
+         middle of the viewport. Positions are layout positions, so the
+         pinning below does not disturb them. */
+      const all = gsap.utils.toArray('[data-panel]', el)
+      all.forEach((panel, i) => {
+        ScrollTrigger.create({
+          trigger: panel,
+          start: 'top 55%',
+          end: 'bottom 55%',
+          onToggle: (self) => self.isActive && setCurrent(i),
+          onLeaveBack: () => i === 0 && setCurrent(-1),
+          onLeave: () => i === all.length - 1 && setCurrent(-1),
+        })
+      })
+
       mm.add('(min-width: 960px) and (prefers-reduced-motion: no-preference)', () => {
         const panels = gsap.utils.toArray('[data-panel]', el)
         panels.forEach((panel, i) => {
@@ -145,9 +161,8 @@ export default function Work() {
           if (i < panels.length - 1) {
             ScrollTrigger.create({ trigger: panel, start: 'top top', pin: true, pinSpacing: false })
             gsap.to(inner, {
-              scale: 0.9,
-              opacity: 0.35,
-              filter: 'blur(2px)',
+              scale: 0.92,
+              opacity: 0.2,
               ease: 'none',
               scrollTrigger: { trigger: panels[i + 1], start: 'top bottom', end: 'top top', scrub: true },
             })
@@ -192,7 +207,7 @@ export default function Work() {
       </header>
       <div className="panels">
         {projects.map((p, i) => (
-          <ProjectPanel key={p.slug} project={p} index={i} total={projects.length} />
+          <ProjectPanel key={p.slug} project={p} index={i} total={projects.length} current={current === i} />
         ))}
       </div>
     </section>

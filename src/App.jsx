@@ -1,18 +1,15 @@
-import { lazy, Suspense, useLayoutEffect, useState } from 'react'
-import { ScrollSmoother, ScrollTrigger, isTouch, reduced } from './lib/gsap'
+import { useLayoutEffect, useState } from 'react'
+import { ScrollSmoother, isTouch, reduced } from './lib/gsap'
 import Cursor from './components/Cursor'
 import Intro from './components/Intro'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
 import About from './components/About'
 import Work from './components/Work'
+import Skills from './components/Skills'
+import GithubStats from './components/GithubStats'
 import Contact from './components/Contact'
 import PreviewModal from './components/PreviewModal'
-
-/* The two Three.js sections are the heavy part of the bundle and sit
-   far below the fold — they load after the page is interactive. */
-const Skills = lazy(() => import('./components/Skills'))
-const GithubStats = lazy(() => import('./components/GithubStats'))
 
 export default function App() {
   const [ready, setReady] = useState(false)
@@ -31,9 +28,6 @@ export default function App() {
     return () => smoother.kill()
   }, [])
 
-  /* Lazy sections change the page height after mount. */
-  const refresh = () => ScrollTrigger.refresh()
-
   return (
     <>
       <Cursor />
@@ -46,10 +40,8 @@ export default function App() {
             <Hero ready={ready} />
             <About />
             <Work />
-            <Suspense fallback={<div className="lazy-pad" />}>
-              <Skills onMount={refresh} />
-              <GithubStats />
-            </Suspense>
+            <Skills />
+            <GithubStats />
           </main>
           <Contact />
         </div>
