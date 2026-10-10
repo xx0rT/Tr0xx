@@ -1,107 +1,103 @@
-import { useState, useEffect, useRef } from 'react'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Float } from '@react-three/drei'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { gsap, EASE, SplitText, reduced } from '../lib/gsap'
+import { goTo } from './Navbar'
 
-const roles = ['Fullstack Web Developer', 'Security Enthusiast', 'Problem Solver']
+const roles = ['Fullstack web developer', 'Security enthusiast', 'Problem solver']
 
-function useTypewriter(words, speed = 70, pause = 2000) {
-  const [text, setText] = useState('')
-
+function useClock() {
+  const fmt = () =>
+    new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', timeZone: 'Europe/Prague' }).format(new Date())
+  const [time, setTime] = useState(fmt)
   useEffect(() => {
-    let word = 0
-    let char = 0
-    let deleting = false
-    let timer
+    const id = setInterval(() => setTime(fmt()), 15_000)
+    return () => clearInterval(id)
+  }, [])
+  return time
+}
 
-    const tick = () => {
-      const current = words[word]
-      char += deleting ? -1 : 1
-      setText(current.slice(0, char))
+/* Full-viewport opener. The name is the whole composition: it sets letter
+   by letter once the intro lifts, and as you scroll away it sinks and
+   fades under the next section, so the page never "cuts". */
+export default function Hero({ ready }) {
+  const root = useRef(null)
+  const mark = useRef(null)
+  const role = useRef(null)
+  const time = useClock()
 
-      let delay = deleting ? speed / 2 : speed
-      if (!deleting && char === current.length) {
-        deleting = true
-        delay = pause
-      } else if (deleting && char === 0) {
-        deleting = false
-        word = (word + 1) % words.length
-        delay = speed * 3
+  useLayoutEffect(() => {
+    const el = root.current
+    if (!el || !ready) return
+    const ctx = gsap.context(() => {
+      if (reduced()) return
+      const letters = el.querySelectorAll('.hero-letter')
+      const lede = SplitText.create(el.querySelector('.hero-lede'), { type: 'lines', mask: 'lines' })
+      gsap.timeline()
+        .from(letters, { yPercent: 105, duration: 1.4, ease: EASE, stagger: 0.07 })
+        .from('.hero-meta > *', { y: 24, opacity: 0, duration: 1, ease: EASE, stagger: 0.08 }, 0.35)
+        .from(lede.lines, { yPercent: 110, duration: 1.1, ease: EASE, stagger: 0.08 }, 0.45)
+        .from('.hero-foot > *', { y: 20, opacity: 0, duration: 0.9, ease: EASE, stagger: 0.08 }, 0.6)
+
+      gsap.to(mark.current, {
+        yPercent: 22,
+        scale: 0.94,
+        opacity: 0.25,
+        ease: 'none',
+        scrollTrigger: { trigger: el, start: 'top top', end: 'bottom top', scrub: true },
+      })
+    }, el)
+    return () => ctx.revert()
+  }, [ready])
+
+  /* Role rotator: the line slides up and the next one follows. */
+  useEffect(() => {
+    if (!ready) return
+    const el = role.current
+    let i = 0
+    const swap = () => {
+      i = (i + 1) % roles.length
+      if (reduced()) {
+        el.textContent = roles[i]
+        return
       }
-      timer = setTimeout(tick, delay)
+      gsap.timeline()
+        .to(el, { yPercent: -110, duration: 0.45, ease: 'power3.in' })
+        .add(() => {
+          el.textContent = roles[i]
+        })
+        .fromTo(el, { yPercent: 110 }, { yPercent: 0, duration: 0.7, ease: EASE })
     }
-
-    timer = setTimeout(tick, speed)
-    return () => clearTimeout(timer)
-  }, [words, speed, pause])
-
-  return text
-}
-
-function HeroObject() {
-  const group = useRef()
-  const knot = useRef()
-  const width = useThree((state) => state.size.width)
-  const fit = Math.min(1, width / 520)
-
-  useFrame((state, delta) => {
-    knot.current.rotation.x += delta * 0.18
-    knot.current.rotation.y += delta * 0.24
-    // ease toward the pointer
-    const targetY = state.pointer.x * 0.45
-    const targetX = -state.pointer.y * 0.3
-    group.current.rotation.y += (targetY - group.current.rotation.y) * 0.05
-    group.current.rotation.x += (targetX - group.current.rotation.x) * 0.05
-  })
+    const id = setInterval(swap, 2800)
+    return () => clearInterval(id)
+  }, [ready])
 
   return (
-    <group ref={group} scale={fit}>
-      <Float speed={1.5} rotationIntensity={0.25} floatIntensity={0.9}>
-        <mesh ref={knot}>
-          <torusKnotGeometry args={[1.15, 0.34, 220, 36]} />
-          <meshStandardMaterial color="#26262e" metalness={0.55} roughness={0.28} />
-        </mesh>
-      </Float>
-      <ambientLight intensity={0.25} />
-      <directionalLight position={[4, 6, 5]} intensity={1.6} />
-      <directionalLight position={[-5, -3, -4]} intensity={1.4} color="#7aa2ff" />
-      <pointLight position={[0, -4, 3]} intensity={12} color="#7aa2ff" distance={9} />
-    </group>
-  )
-}
-
-export default function Hero() {
-  const typed = useTypewriter(roles)
-
-  return (
-    <section id="home" className="hero">
-      <div>
-        <p className="hero-kicker">Hi, I'm Denis — welcome.</p>
-        <h1 className="hero-name">Troxx</h1>
-        <p className="hero-role">
-          {typed}
-          <span className="caret" />
-        </p>
-        <p className="hero-info">
-          A developer with a passion for technology and coding. I build clean, functional web
-          applications from front to back.
-        </p>
-        <div className="hero-actions">
-          <a href="mailto:txrxo.troxx@gmail.com" className="btn primary">
-            Let's talk
-          </a>
-          <a href="https://github.com/xx0rT" target="_blank" rel="noreferrer" className="btn ghost">
-            GitHub ↗
-          </a>
-        </div>
+    <section id="home" ref={root} className="hero">
+      <div className="hero-meta">
+        <span>Denis “Troxx”</span>
+        <span className="hero-role-mask">
+          <span ref={role} className="hero-role">{roles[0]}</span>
+        </span>
+        <span>Prague · {time}</span>
       </div>
-      <div className="hero-canvas">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
-          <HeroObject />
-        </Canvas>
+
+      <h1 ref={mark} className="hero-mark" aria-label="Troxx">
+        {'TROXX'.split('').map((c, i) => (
+          <span key={i} className="hero-mask" aria-hidden>
+            <span className="hero-letter">{c}</span>
+          </span>
+        ))}
+      </h1>
+
+      <div className="hero-foot">
+        <p className="hero-lede">
+          I design and build fast, clean web applications — marketplaces, e-commerce and booking
+          systems — from the database to the last animation.
+        </p>
+        <button className="hero-scroll" onClick={() => goTo('about')}>
+          <span>Scroll</span>
+          <i />
+        </button>
       </div>
-      <p className="scroll-hint">
-        <span>SCROLL ↓</span>
-      </p>
     </section>
   )
 }

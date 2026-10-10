@@ -15,62 +15,73 @@ export const skills = [
   { name: 'NESSUS', icon: asset('/assets/skills/nessus.png') },
 ]
 
+/* Every project carries a live URL (embedded in an iframe, pointer-events
+   off until it is opened fullscreen) plus fresh desktop + mobile
+   screenshots taken from the live site, shown under the iframe while it
+   loads and on the Desktop / Mobile tabs. */
+const shot = (slug, kind) => asset(`/assets/projects/shots/${slug}-${kind}.webp`)
+
 export const projects = [
   {
     slug: 'skinify',
     title: 'Skinify',
+    kind: 'CS2 skin marketplace',
     description:
-      'CS2 marketplace made with React, a MySQL database, Tailwind, GSAP, Framer and Vite. API endpoints and multiple edge functions.',
-    stack: ['react', 'mysql', 'tailwind', 'gsap', 'vite'],
-    image: asset('/assets/projects/skinify.png'),
-    link: 'https://skinify.gg',
+      'A peer-to-peer marketplace for Counter-Strike 2 skins with balances, escrow, card deposits and payouts, and delivery verified against Steam inventories. React and Vite on the front, Supabase (Postgres + edge functions) behind it.',
+    stack: ['React', 'TypeScript', 'Supabase', 'Stripe', 'GSAP', 'Tailwind'],
+    url: 'https://skinify.gg',
+  },
+  {
+    slug: 'pavelski',
+    title: 'Pavelski',
+    kind: 'Hair salon redesign concept',
+    description:
+      'Redesign concept for a hair salon in Letná, Prague — a scroll-driven, editorial site with smooth scrolling, layered imagery and a WebGL touch.',
+    stack: ['GSAP', 'ScrollTrigger', 'Lenis', 'Three.js'],
+    url: 'https://pavelski-nahled.surge.sh',
   },
   {
     slug: 'jechart',
-    title: 'Jechart.ART',
+    title: 'JechART',
+    kind: 'Streetwear e-commerce',
     description:
-      'E-commerce website created with React, MySQL and Vite. One of the biggest projects I’ve made.',
-    stack: ['react', 'mysql', 'vite'],
-    image: asset('/assets/projects/jechart.png'),
-    link: 'https://jechart.art',
-  },
-  {
-    slug: 'preprava',
-    title: 'Preprava.cz',
-    description:
-      'Website for transferring items, built for a customer with React, Node.js and Tailwind.',
-    stack: ['react', 'nodejs', 'tailwind'],
-    image: asset('/assets/projects/preprava.png'),
-    link: 'https://preprava.netlify.app',
-  },
-  {
-    slug: 'catering',
-    title: 'Catering',
-    description:
-      'Catering web made for one of my customers using React, Node.js, Tailwind and CSS.',
-    stack: ['react', 'nodejs', 'tailwind'],
-    image: asset('/assets/projects/catering.png'),
-    link: 'https://ketering.netlify.app',
+      'E-commerce for hand-painted designer clothing — catalogue, cart and checkout. One of the biggest projects I have built.',
+    stack: ['React', 'MySQL', 'Vite'],
+    url: 'https://jechart.cz',
   },
   {
     slug: 'vila-adalbert',
     title: 'Vila Adalbert',
-    description:
-      'Reservation system for a customer’s villa, created with React, Vite, MySQL, GSAP and AOS.',
-    stack: ['react', 'vite', 'mysql', 'gsap'],
-    image: asset('/assets/projects/vilal.png'),
-    link: 'https://vila-adalbert.netlify.app',
+    kind: 'Villa reservation system',
+    description: 'Reservation system for a client’s villa, with availability and booking flow.',
+    stack: ['React', 'Vite', 'MySQL', 'GSAP'],
+    url: 'https://vila-adalbert.netlify.app',
+  },
+  {
+    slug: 'preprava',
+    title: 'Preprava.cz',
+    kind: 'Transport service',
+    description: 'Website for an item-transport service, built for a client.',
+    stack: ['React', 'Node.js', 'Tailwind'],
+    url: 'https://preprava.netlify.app',
   },
   {
     slug: 'car-rental',
     title: 'Car Rental',
-    description:
-      'Car rental website developed with React, Tailwind, Node, TypeScript and Vite.',
-    stack: ['react', 'tailwind', 'nodejs', 'ts', 'vite'],
-    image: asset('/assets/projects/pronajem.png'),
-    link: 'https://pronajem.netlify.app',
+    kind: 'Rental website',
+    description: 'Car rental website with a fleet overview and booking enquiries.',
+    stack: ['React', 'TypeScript', 'Tailwind', 'Node.js', 'Vite'],
+    url: 'https://pronajem.netlify.app',
   },
-]
+  {
+    slug: 'catering',
+    title: 'Gusto Catering',
+    kind: 'Catering company',
+    description: 'Website for a catering company — services, pricing and past events.',
+    stack: ['React', 'Node.js', 'Tailwind'],
+    url: 'https://ketering.netlify.app',
+  },
+].map((p) => ({ ...p, shots: { desktop: shot(p.slug, 'desktop'), mobile: shot(p.slug, 'mobile') } }))
 
 export const github = {
   username: 'xx0rT',

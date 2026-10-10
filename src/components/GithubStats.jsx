@@ -189,8 +189,8 @@ export default function GithubStats() {
   ]
 
   return (
-    <section id="github" ref={ref}>
-      <p className="section-label reveal">GitHub</p>
+    <section id="github" ref={ref} className="gh screen">
+      <p className="section-index reveal">(04) GitHub</p>
       <h2 className="section-title reveal">A year of contributions, in 3D</h2>
 
       <div className="card gh-skyline-wrap reveal">

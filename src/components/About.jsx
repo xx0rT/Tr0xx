@@ -1,52 +1,64 @@
-import useReveal from '../hooks/useReveal'
+import { useLayoutEffect, useRef } from 'react'
+import { gsap, SplitText, reduced } from '../lib/gsap'
 import asset from '../lib/asset'
 
+const facts = [
+  ['Name', 'Denis “Troxx”'],
+  ['Role', 'Fullstack developer'],
+  ['Education', 'High School of Aviation & Computer Technology, ’25'],
+  ['Next', 'University'],
+]
+
+/* One statement that lights up word by word as it scrolls through the
+   viewport — read at the pace you scroll. */
 export default function About() {
-  const ref = useReveal()
+  const root = useRef(null)
+
+  useLayoutEffect(() => {
+    const el = root.current
+    if (!el || reduced()) return
+    const ctx = gsap.context(() => {
+      const split = SplitText.create('.about-statement', { type: 'words' })
+      gsap.fromTo(
+        split.words,
+        { opacity: 0.14 },
+        {
+          opacity: 1,
+          ease: 'none',
+          stagger: 0.1,
+          scrollTrigger: { trigger: '.about-statement', start: 'top 80%', end: 'bottom 45%', scrub: true },
+        },
+      )
+      gsap.from('.about-row', {
+        y: 24,
+        opacity: 0,
+        duration: 0.9,
+        ease: 'expo.out',
+        stagger: 0.08,
+        scrollTrigger: { trigger: '.about-facts', start: 'top 85%' },
+      })
+    }, el)
+    return () => ctx.revert()
+  }, [])
 
   return (
-    <section id="about" ref={ref}>
-      <p className="section-label reveal">About</p>
-      <h2 className="section-title reveal">A bit about me</h2>
-      <div className="about-grid">
-        <div className="card about-text reveal">
-          <p>
-            I work with a classic tech stack, including <strong>JavaScript</strong>,{' '}
-            <strong>Node.js</strong>, <strong>React</strong>, <strong>HTML</strong>, and other
-            common tools. I enjoy building clean, functional applications and learning new
-            technologies that help me improve my skills.
-          </p>
-          <p>
-            Whether it's front-end or back-end development, I like solving problems and turning
-            ideas into real, working projects.
-          </p>
-          <p>
-            I graduated from the High School of Aviation and Computer Technology in 2025. My next
-            goal is to continue my education at a university and deepen my knowledge in the field.
-          </p>
-        </div>
-
-        <div className="card about-facts reveal">
-          <img src={asset('/assets/workingguy.png')} alt="Troxx avatar" />
-          <div className="fact-list">
-            <div className="fact-row">
-              <span className="k">Name</span>
-              <span className="v">Denis "Troxx"</span>
+    <section id="about" ref={root} className="about screen">
+      <p className="section-index">(01) About</p>
+      <p className="about-statement">
+        I work across the whole stack — JavaScript, TypeScript, React, Node.js and the databases
+        behind them. I like clean, functional products, interfaces that move with intent, and
+        turning an idea into something real people use every day.
+      </p>
+      <div className="about-facts">
+        <img src={asset('/assets/workingguy.png')} alt="" className="about-avatar" />
+        <dl>
+          {facts.map(([k, v]) => (
+            <div key={k} className="about-row">
+              <dt>{k}</dt>
+              <dd>{v}</dd>
             </div>
-            <div className="fact-row">
-              <span className="k">Role</span>
-              <span className="v">Fullstack Developer</span>
-            </div>
-            <div className="fact-row">
-              <span className="k">Education</span>
-              <span className="v">Aviation & Computer Tech '25</span>
-            </div>
-            <div className="fact-row">
-              <span className="k">Next goal</span>
-              <span className="v">University</span>
-            </div>
-          </div>
-        </div>
+          ))}
+        </dl>
       </div>
     </section>
   )
