@@ -245,7 +245,7 @@ body::after {
 }
 
 /* ---------- about ---------- */
-.about { display: flex; flex-direction: column; justify-content: center; }
+.about { display: flex; flex-direction: column; justify-content: center; min-height: auto; padding-bottom: clamp(56px, 9vh, 104px); }
 .about-statement {
   font-family: var(--display);
   font-size: clamp(1.8rem, 4.4vw, 4.2rem);
@@ -255,15 +255,15 @@ body::after {
   max-width: 22ch;
   text-wrap: balance;
 }
-.about-facts { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 32px; margin-top: clamp(48px, 9vh, 96px); max-width: 860px; }
-.about-avatar { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; background: var(--surface); }
-.about-facts dl { border-top: 1px solid var(--border); }
-.about-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
-.about-row dt { color: var(--text-dim); }
-@media (max-width: 640px) { .about-facts { grid-template-columns: 1fr; } .about-row { grid-template-columns: 110px 1fr; } }
+.about-facts { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(20px, 3vw, 48px); margin-top: clamp(56px, 10vh, 112px); }
+.about-row { --line: 1; position: relative; padding-top: 18px; }
+.about-row::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 1px; background: var(--border); transform: scaleX(var(--line)); transform-origin: left; }
+.about-row dt { font-size: 0.8rem; color: var(--text-dim); }
+.about-row dd { margin-top: 10px; font-family: var(--display); font-size: clamp(1.1rem, 1.6vw, 1.45rem); font-weight: 500; letter-spacing: -0.025em; line-height: 1.25; text-wrap: balance; }
+@media (max-width: 860px) { .about-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 32px; } }
 
 /* ---------- work ---------- */
-.work-head { display: flex; flex-direction: column; justify-content: flex-end; min-height: 90svh; }
+.work-head { display: flex; flex-direction: column; justify-content: flex-end; min-height: auto; padding-top: clamp(56px, 9vh, 104px); }
 .work-title { font-family: var(--display); font-size: clamp(2.6rem, 8vw, 8.2rem); font-weight: 600; letter-spacing: -0.055em; line-height: 0.95; }
 .work-note { margin-top: 32px; max-width: 46ch; color: var(--text-dim); font-size: 1.05rem; line-height: 1.55; }
 

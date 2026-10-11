@@ -1,6 +1,5 @@
 import { useLayoutEffect, useRef } from 'react'
 import { gsap, SplitText, reduced } from '../lib/gsap'
-import asset from '../lib/asset'
 
 const facts = [
   ['Name', 'Denis “Troxx”'],
@@ -30,12 +29,13 @@ export default function About() {
         },
       )
       gsap.from('.about-row', {
+        '--line': 0,
         y: 24,
         opacity: 0,
-        duration: 0.9,
+        duration: 1,
         ease: 'expo.out',
         stagger: 0.08,
-        scrollTrigger: { trigger: '.about-facts', start: 'top 85%' },
+        scrollTrigger: { trigger: '.about-facts', start: 'top 90%' },
       })
     }, el)
     return () => ctx.revert()
@@ -49,17 +49,14 @@ export default function About() {
         behind them. I like clean, functional products, interfaces that move with intent, and
         turning an idea into something real people use every day.
       </p>
-      <div className="about-facts">
-        <img src={asset('/assets/workingguy.png')} alt="" className="about-avatar" />
-        <dl>
-          {facts.map(([k, v]) => (
-            <div key={k} className="about-row">
-              <dt>{k}</dt>
-              <dd>{v}</dd>
-            </div>
-          ))}
-        </dl>
-      </div>
+      <dl className="about-facts">
+        {facts.map(([k, v]) => (
+          <div key={k} className="about-row">
+            <dt>{k}</dt>
+            <dd>{v}</dd>
+          </div>
+        ))}
+      </dl>
     </section>
   )
 }
