@@ -5,7 +5,7 @@ const facts = [
   ['Name', 'Denis “Troxx”'],
   ['Role', 'Fullstack developer'],
   ['Education', 'High School of Aviation & Computer Technology, ’25'],
-  ['Next', 'University'],
+  ['Now', 'Information Technology, University of Finance and Administration (VŠFS)'],
 ]
 
 /* One statement that lights up word by word as it scrolls through the
