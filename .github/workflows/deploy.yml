@@ -25,6 +25,15 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      # Keep the previous release's entry files. GitHub Pages lets browsers
+      # cache index.html for ~10 min, and a cached page asking for a hashed
+      # stylesheet that this deploy removed renders completely unstyled.
+      - name: Carry over the live release's assets
+        run: |
+          base="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+          for f in $(curl -fsS "$base/" | grep -oE 'assets/index-[A-Za-z0-9_-]+\.(js|css)' | sort -u); do
+            if [ ! -f "dist/$f" ] && curl -fsS -o "dist/$f" "$base/$f"; then echo "kept $f"; fi
+          done || true
       # switch the Pages source to "GitHub Actions" (no-op once set)
       - name: Set Pages build type to workflow
         run: |

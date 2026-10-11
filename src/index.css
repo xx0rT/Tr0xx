@@ -228,7 +228,7 @@ body::after {
   font-weight: 700;
   font-size: 24vw;
   line-height: 0.78;
-  letter-spacing: -0.05em;
+  letter-spacing: -0.035em;
   margin-left: -0.03em;
 }
 .hero-mask { display: inline-block; overflow-x: visible; overflow-y: clip; padding-bottom: 0.03em; will-change: transform; }
