@@ -57,6 +57,15 @@ export const projects = [
     url: 'https://pavelski-nahled.surge.sh',
   },
   {
+    slug: 'dires',
+    title: 'Dires Fyzio',
+    kind: 'Physiotherapy clinic & course platform',
+    description:
+      'Website and web app for a private physiotherapy centre in Prague: online courses with purchase and enrolment, paid workshop and event sign-ups through Stripe Checkout, customer accounts, a blog, and an admin panel the team uses to run courses, events and content.',
+    stack: ['React', 'Vite', 'Supabase', 'Stripe', 'GSAP', 'Tailwind'],
+    url: 'https://dires.cz',
+  },
+  {
     slug: 'jechart',
     title: 'JechART',
     kind: 'Streetwear e-commerce',
