@@ -66,6 +66,15 @@ export const projects = [
     url: 'https://dires.cz',
   },
   {
+    slug: 'mckenzie',
+    title: 'Fyzioterapie McKenzie',
+    kind: 'Physiotherapy practice redesign concept',
+    description:
+      'Redesign concept for a McKenzie (MDT) physiotherapy practice in České Budějovice — one editorial page from the pain you came with to an online booking form, covering the method, the therapist, prices and FAQ, with scroll-driven motion and smooth scrolling.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'Lenis'],
+    url: 'https://fyzioterapie-mckenzie-nahled.surge.sh',
+  },
+  {
     slug: 'jechart',
     title: 'JechART',
     kind: 'Streetwear e-commerce',
