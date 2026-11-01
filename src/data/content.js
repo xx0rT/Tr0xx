@@ -48,6 +48,15 @@ export const projects = [
     url: 'https://skinify.gg',
   },
   {
+    slug: 'loudovi',
+    title: 'Květiny Loudovi',
+    kind: 'Florist — Kutná Hora',
+    description:
+      'Website for a flower shop in Kutná Hora running since 2000 — made-to-order bouquets, a gallery, opening hours and contact, with an editorial hero and soft seasonal motion. Built, delivered and live for the client.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP'],
+    url: 'https://kvetinyloudovi.cz',
+  },
+  {
     slug: 'pavelski',
     title: 'Pavelski',
     kind: 'Hair salon redesign concept',
@@ -73,6 +82,51 @@ export const projects = [
       'Redesign concept for a McKenzie (MDT) physiotherapy practice in České Budějovice — one editorial page from the pain you came with to an online booking form, covering the method, the therapist, prices and FAQ, with scroll-driven motion and smooth scrolling.',
     stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'Lenis'],
     url: 'https://fyzioterapie-mckenzie-nahled.surge.sh',
+  },
+  {
+    slug: 'rysavy',
+    title: 'Malíř Ryšavý',
+    kind: 'House painter redesign concept',
+    description:
+      'Redesign concept for a painting-and-decorating business in Liberec — a scroll-driven one-pager from services and references to an enquiry form, with an intro reveal and smooth scrolling.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'Lenis'],
+    url: 'https://malir-rysavy-nahled.surge.sh',
+  },
+  {
+    slug: 'lenka-vrabcova',
+    title: 'Lenka Vrabcová',
+    kind: 'Nail-training redesign concept',
+    description:
+      'Redesign concept for a nail-modelling course run by a Czech Nail Cup 2023 winner — course variants, dates and cities, an online booking flow, a gallery and light/dark themes.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'Lenis'],
+    url: 'https://lv-nahled-2b776b2e.surge.sh',
+  },
+  {
+    slug: 'tolg',
+    title: 'Čalounictví Tölg',
+    kind: 'Upholstery workshop concept',
+    description:
+      'Site concept for an upholstery workshop in Brno — reupholstery services at the customer’s home, a fabric sample book, references and a photo-enquiry flow, with an editorial hero and seasonal motion.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'Lenis'],
+    url: 'https://calounictvi-tolg-nahled.surge.sh',
+  },
+  {
+    slug: 'ciganek',
+    title: 'Stolařství Cigánek',
+    kind: 'Joinery concept',
+    description:
+      'Site concept for a bespoke-furniture joinery in Přerov — kitchens, wardrobes and interiors made to measure, with a dark editorial hero, a realisations gallery and an enquiry flow.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'Lenis'],
+    url: 'https://stolarstvi-ciganek-nahled.surge.sh',
+  },
+  {
+    slug: 'miklos',
+    title: 'Čalounická opravna Miklóš',
+    kind: 'Upholstery repair concept',
+    description:
+      'Site concept for an upholstery repair shop in Nymburk — reupholstery and furniture repair, a services overview and an enquiry flow, with a scroll-driven intro and smooth scrolling.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'Lenis'],
+    url: 'https://calounictvi-miklos-nahled.surge.sh',
   },
   {
     slug: 'jechart',
