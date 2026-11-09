@@ -129,6 +129,51 @@ export const projects = [
     url: 'https://calounictvi-miklos-nahled.surge.sh',
   },
   {
+    slug: 'wokno',
+    title: 'Wokno u Zastávky',
+    kind: 'Roadside café concept',
+    description:
+      'Site concept for a one-woman ice-cream and coffee window at a village bus stop near Sedlčany — opening hours as a bus timetable with a live open/closed status, a full menu board, party-machine rental and a parcel point, with hand-drawn SVG icons, a pinned route drawn on scroll and smooth scrolling.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'ScrollSmoother', 'DrawSVG', 'MotionPath'],
+    url: 'https://wokno-nahled.surge.sh',
+  },
+  {
+    slug: 'pokorova',
+    title: 'MVDr. Helena Pokorová',
+    kind: 'Equine chiropractor concept',
+    description:
+      'Site concept for an equine vet and chiropractor — 22 pages rebuilt from her Canva site: treatment, ten seminar pages, articles, books and contact, with an anatomical horse drawing that sketches itself on scroll and a satellite map of her service area.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger', 'SplitText', 'SVG'],
+    url: 'https://pokorova-nahled.surge.sh',
+  },
+  {
+    slug: 'lebeda',
+    title: 'Martin Lebeda',
+    kind: 'Wedding photographer concept',
+    description:
+      'Redesign concept for a wedding, family and commercial photographer in Valtice — a separate page for each kind of shoot, photo and video under one roof, how a booking goes and a free-date enquiry, with scroll-driven image reveals and page transitions.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger'],
+    url: 'https://lebeda-nahled.surge.sh',
+  },
+  {
+    slug: 'cistychlup',
+    title: 'Čistý chlup',
+    kind: 'Carpet & upholstery cleaning concept',
+    description:
+      'Site concept for a carpet, sofa and car-interior cleaning service in Havířov — a before/after hero, separate pages for every service, a price list and machine rental, with a light/dark theme switch.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP', 'ScrollTrigger'],
+    url: 'https://cistychlup-nahled.surge.sh',
+  },
+  {
+    slug: 'dvirka',
+    title: 'Dvirka.pro',
+    kind: 'Kitchen doors manufacturer concept',
+    description:
+      'Site concept for a lacquer shop making made-to-measure kitchen cabinet doors in Brno and Zlín — a door configurator with VAT toggle and cart, free samples, renovation and developer services, and a parts-list enquiry flow.',
+    stack: ['HTML', 'CSS', 'JavaScript', 'GSAP'],
+    url: 'https://dvirka-nahled.surge.sh',
+  },
+  {
     slug: 'jechart',
     title: 'JechART',
     kind: 'Streetwear e-commerce',
