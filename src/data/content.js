@@ -182,38 +182,6 @@ export const projects = [
     stack: ['React', 'MySQL', 'Vite'],
     url: 'https://jechart.cz',
   },
-  {
-    slug: 'vila-adalbert',
-    title: 'Vila Adalbert',
-    kind: 'Villa reservation system',
-    description: 'Reservation system for a client’s villa, with availability and booking flow.',
-    stack: ['React', 'Vite', 'MySQL', 'GSAP'],
-    url: 'https://vila-adalbert.netlify.app',
-  },
-  {
-    slug: 'preprava',
-    title: 'Preprava.cz',
-    kind: 'Transport service',
-    description: 'Website for an item-transport service, built for a client.',
-    stack: ['React', 'Node.js', 'Tailwind'],
-    url: 'https://preprava.netlify.app',
-  },
-  {
-    slug: 'car-rental',
-    title: 'Car Rental',
-    kind: 'Rental website',
-    description: 'Car rental website with a fleet overview and booking enquiries.',
-    stack: ['React', 'TypeScript', 'Tailwind', 'Node.js', 'Vite'],
-    url: 'https://pronajem.netlify.app',
-  },
-  {
-    slug: 'catering',
-    title: 'Gusto Catering',
-    kind: 'Catering company',
-    description: 'Website for a catering company — services, pricing and past events.',
-    stack: ['React', 'Node.js', 'Tailwind'],
-    url: 'https://ketering.netlify.app',
-  },
 ].map((p) => ({ ...p, shots: { desktop: shot(p.slug, 'desktop'), mobile: shot(p.slug, 'mobile') } }))
 
 export const github = {
